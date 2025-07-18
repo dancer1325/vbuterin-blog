@@ -90,11 +90,21 @@ Let us now go through each of these topic areas in more detail.
 
 </center><br>
 
-With EIP-4844, we now have 3 blobs per slot, or a data bandwidth of 384 kB per slot. Quick napkin math suggests that this is 32 kB per second, and each transaction takes about [150 bytes](https://x.com/VitalikButerin/status/1554983955182809088) onchain, so we get ~210 tx/sec. L2beat data gives us [almost exactly this number](https://l2beat.com/scaling/activity).
+* | EIP-4844,
+  * 3 blobs / slot
+  * data bandwidth = 384 kB / slot
+    * == 32 kB / second
+    * -> 1 transaction / [150 bytes](https://x.com/VitalikButerin/status/1554983955182809088) onchain
+      * == ~210 tx/sec == [L2beat](https://l2beat.com/scaling/activity)
 
-With Pectra, scheduled for [release in March](https://thedefiant.io/news/blockchains/ethereum-pectra-network-upgrade-to-go-live-in-march), we plan to double this to [6 blobs per slot](https://eips.ethereum.org/EIPS/eip-7691).
+* Pectra
+  * scheduled -- for -- [release | March](https://thedefiant.io/news/blockchains/ethereum-pectra-network-upgrade-to-go-live-in-march)
+  * allows
+    * [6 blobs / slot](https://eips.ethereum.org/EIPS/eip-7691)
 
-The current [goal of Fusaka](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-7607.md/) is to focus primarily on [PeerDAS](https://ethresear.ch/t/peerdas-a-simpler-das-approach-using-battle-tested-p2p-components/16541), ideally having nothing other than PeerDAS and [EOF](https://evmobjectformat.org/). PeerDAS could increase the blob count immediately by another 2-4x, and then 8x or more over time.
+* [Fusaka](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-7607.md/)
+  * 's goal
+    * focus | [PeerDAS](https://ethresear.ch/t/peerdas-a-simpler-das-approach-using-battle-tested-p2p-components/16541), ideally having nothing other than PeerDAS and [EOF](https://evmobjectformat.org/). PeerDAS could increase the blob count immediately by another 2-4x, and then 8x or more over time.
 
 After that point, the goal is to keep improving the technology to increase the blob count further. When we get to [2D sampling](https://ethresear.ch/t/2d-data-availability-with-kate-commitments/8081), we can reach 128 blobs per slot, and then keep going further. With this, and [improvements to data compression](https://vitalik.eth.limo/general/2024/10/17/futures2.html#3), we can reach 100,000 TPS onchain.
 

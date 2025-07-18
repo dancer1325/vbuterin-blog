@@ -3,52 +3,111 @@
 [title]: <> (Ethereum has blobs. Where do we go from here?)
 [pandoc]: <> ()
 
-On March 13, the Dencun hard fork activated, enabling one of the long-awaited features of Ethereum: proto-danksharding (aka [EIP-4844](https://www.eip4844.com/), aka blobs). Initially, the fork reduced the transaction fees of rollups by a factor of over 100, as blobs were nearly free. In the last day, we finally saw blobs spike up in volume and the fee market activate as the blobscriptions protocol started to use them. Blobs are not free, but they remain much cheaper than calldata.
+* | March 13,
+  * Dencun hard fork activated,
+    * enable 
+      * ⭐️proto-danksharding⭐️or blobs
+        * == Ethereum's feature -- EIP-4844 -- 
+        * ->
+          * | INITIALLY,
+            * 👀reduced rollups' transaction fees -100x👀
+              * == blobs == nearly free
+          * | LAST day,
+            * blobs spiked up in volume -> fee market activate == `blobscriptions` protocol started to use them
+            * == blobs 
+              * NOT free
+              * vs `calldata`
+                * much cheaper 
 
-<center><br>
+![](../images/blobs/blobscriptions.png)
 
-![](../../../../images/blobs/blobscriptions.png)
+* Left
+  * | final
+    * blob usage spiking up -- , thanks to Blobscriptions, to -- 3-per-block target
 
-<small><i>Left: blob usage finally spiking up to the 3-per-block target thanks to Blobscriptions. RIght: blob fees "entering price discovery mode" as a result. Source: [https://dune.com/0xRob/blobs](https://dune.com/0xRob/blobs).</i></small>
+* Right
+  * | final
+    * blob fees enters "price discovery mode"
+  * [Source](https://dune.com/0xRob/blobs)
 
-</center><br>
+* blobs
+  * -> ⚠️Ethereum scaling "zero-to-one" problem -- become to -- "one-to-N" problem ⭐️
+    * "zero-to-one"
+      * how to scale INITIALLY Ethereum?
+    * "one-to-N"
+      * scaling ALREADY in place
+      * how far away can it scale?
+  * ❌NOT gives us data availability sampling❌
+    * Reason: 🧠ONLY  set up the basic scaffolding / 
+      * | FUTURE, WITHOUT involving users or applications,
+        * data availability sampling can be introduced
+        * blob count can be increased 🧠
 
-This milestone represents a key transition in Ethereum's long-term roadmap: **blobs are the moment where Ethereum scaling ceased to be a "zero-to-one" problem, and became a "one-to-N" problem.** From here, important scaling work, both in increasing blob count and in improving rollups' ability to make the best use of each blob, will continue to take place, but it will be more _incremental_. The scaling-related changes to the _fundamental paradigm_ of how Ethereum as an ecosystem operates are increasingly already behind us. Additionally, emphasis is already slowly shifting, and will continue to slowly shift, from L1 problems such as PoS and scaling, to problems closer to the application layer. The key question that this post will cover is: **where does Ethereum go from here?**
+* FUTURE 
+  * scaling research
+    * how to increase blob count (== capacity)?
+      * _Example:_ FULL vision of data availability sampling : 16 MB / slot of data space
+    * improve rollups' ability
+      * == improve use of data space
+  * critical points
+    * problems -- closer to the -- application layer
+
+* goal of this post
+  * 👀where does Ethereum go from here?👀
 
 ## The future of Ethereum scaling
 
-Over the last few years, we have seen Ethereum slowly shift over to becoming an [L2-centric ecosystem](https://ethereum-magicians.org/t/a-rollup-centric-ethereum-roadmap/4698). Major applications have started to move over from L1 to L2, payments are starting to be L2-based by default, and wallets are starting to build their user experience around the new multi-L2 environment.
+* | LAST FEW years,
+  * 👀Ethereum == [L2-centric ecosystem](https://ethereum-magicians.org/t/a-rollup-centric-ethereum-roadmap/4698)👀
+    * MAJOR applications have moved over from L1 -- to -> L2,
+    * payments L2-based by default,
+    * wallets start to build their UI | NEW MULTI-L2 environment
 
-From the very beginning, a key piece of the rollup-centric roadmap was the idea of **separate data availability space**: a special section of space in a block, which the EVM would _not_ have access to, that could hold data for layer-2 projects such as rollups. Because this data space is not EVM-accessible, it can be broadcasted separately from a block and verified separately from a block. Eventually, it can be verified with a technology called [**data availability sampling**](https://www.paradigm.xyz/2022/08/das), which allows each node to verify that the data was correctly published by only randomly checking a few small samples. Once this is implemented, the blob space could be greatly expanded; the eventual goal is 16 MB per slot (~1.33 MB per second).
+* rollup-centric roadmap
+  * 's goal
+    * 💡special section of space | block💡 / 
+      * ❌EVM would NOT have access to❌ -> it can be
+        * broadcasted separately -- from a -- block 
+        * verified separately -- , via [data availability sampling](https://www.paradigm.xyz/2022/08/das), from a -- block
+      * hold data -- for -- L-2 projects (_Example:_ rollups)
+  
+* [data availability sampling](https://www.paradigm.xyz/2022/08/das)
+  * node verifies -- , 💡by ONLY RANDOMLY checking a FEW SMALL samples💡, -- the data was correctly published 
+    * == ONLY download FEW SMALL samples
+    * -> 👀blob space could be GREATELY expanded👀
+      * goal == 16 MB / slot (~1.33 MB / second)
 
-<center><br>
-
-![](../../../../images/blobs/das.png)
-
-<small><i>Data availability sampling: each node only needs to download a small portion of the data to verify the availability of the whole thing.</i></small>
-
-</center><br>
-
-EIP-4844 (aka "blobs") does not give us data availability sampling. But it does set up the basic scaffolding in such a way that **from here on, data availability sampling can be introduced and blob count can be increased behind the scenes, all without any involvement from users or applications**. In fact, the only "hard fork" required is a simple parameter change.
-
-There are two strands of development that will need to continue from here:
-
-1. **Progressively increasing blob capacity**, eventually bringing to life the full vision of data availability sampling with 16 MB per slot of data space
-2. Improving L2s to **make better use of the data space that we have**
+  ![](../images/blobs/das.png)
 
 ### Bringing DAS to life
 
-The next stage is likely to be a simplified version of DAS called [PeerDAS](https://ethresear.ch/t/peerdas-a-simpler-das-approach-using-battle-tested-p2p-components/16541). In PeerDAS, each node stores a significant fraction (eg. 1/8) of all blob data, and nodes maintain connections to many peers in the p2p network. When a node needs to sample for a particular piece of data, it asks one of the peers that it knows is responsible for storing that piece.
+* [PeerDAS](https://ethresear.ch/t/peerdas-a-simpler-das-approach-using-battle-tested-p2p-components/16541)
+  * 💡== simplified version of DAS💡
+  * 's node
+    * 👀downloads & stores ALL blob data's significant fraction (_Example:_ 1/8)👀   
+      * -> ⭐️scale blobs⭐️
+        * _Example:_ if nodes ONLY store 1/8 -> scale by 4x 
+          * 8x / 2 = 4x
+            * 2 -- due to -- redundancy of erasure coding
+    * maintain connections -- to -- MANY peers | p2p network
+    * 👀if it needs to sample / particular piece of data -> asks one of the peers / is responsible for storing that piece👀
+  * 👀| time, can be rolled out👀
+    * == professional stakers / download FULL blobs + solo stakers / download 1/8 of the data
 
 <center><br>
 
-![](../../../../images/blobs/peerdas.png)
+![](../images/blobs/peerdas.png)
 
 </center><br>
 
-If each node needs to download and store 1/8 of all data, then PeerDAS lets us theoretically scale blobs by 8x (well, actually 4x, because we lose 2x to the redundancy of erasure coding). PeerDAS can be rolled out over time: we can have a stage where professional stakers continue downloading full blobs, and solo stakers only download 1/8 of the data.
+* [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) or [2D pricing](https://ethresear.ch/t/multidimensional-eip-1559/11651) (ALTERNATIVE)
+  * put stricter bounds | execution block's maximum size (== "regular transactions" | block)
+    * -> safer to increase blob target & L1 gas limit
 
-In addition to this, [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) (or alternatives such as [2D pricing](https://ethresear.ch/t/multidimensional-eip-1559/11651)) can be used to put stricter bounds on the maximum size of an execution block (ie. the "regular transactions" in a block), which makes it safer to increase both the blob target and the L1 gas limit. In the longer term, more complicated [2D DAS protocols](https://ethresear.ch/t/from-4844-to-danksharding-a-path-to-scaling-ethereum-da/18046) will let us go all the way and increase blob space further.
+* [2D DAS protocols](https://ethresear.ch/t/from-4844-to-danksharding-a-path-to-scaling-ethereum-da/18046)
+  * MORE complicated
+  * | longer term,
+    * enable increase blob space further
 
 ### Improving L2s
 
